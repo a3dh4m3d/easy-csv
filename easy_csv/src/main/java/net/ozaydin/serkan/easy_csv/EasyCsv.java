@@ -69,6 +69,34 @@ public class EasyCsv {
             fileCallback.onFail("Write Permission Error");
         }
     }
+    public void createCsvFile(File fileWithPath, List<String> headerList, List<String> data, int permissionRequestCode, final FileCallback fileCallback) {
+        if (PermissionUtility.askPermissionForActivity(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE, permissionRequestCode)) {
+
+
+            file = fileWithPath;
+            outputStream = null;
+
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                fileCallback.onFail(e.getMessage());
+            }
+
+
+            List<String> headerListWithComma=Utils.separatorReplace(separatorColumn,seperatorLine,headerList);
+            List<String> dataListWithComma=Utils.separatorReplace(separatorColumn,seperatorLine,data);
+
+
+
+            file=writeDataToFile(file,containAllData(headerListWithComma,dataListWithComma),fileCallback);
+
+            fileCallback.onSuccess(file);
+
+
+        } else {
+            fileCallback.onFail("Write Permission Error");
+        }
+    }
 
 
     /**
